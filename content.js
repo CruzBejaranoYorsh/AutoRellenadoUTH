@@ -16,19 +16,21 @@ function llenarFormulario() {
     );
 }
 
-const currentUrl = window.location.href;
-// Solo se ejecuta en la página de login específica
-if (currentUrl.includes("op=211") && currentUrl.includes("re=1")) {
-    const btn = document.createElement("button");
-    btn.innerText = "AUTO";
-    
-    // Aplicamos la clase nativa del sitio para heredar estilos base
-    btn.className = "btn";
+function inyectarBotonOriginal() {
+    // Si ya existe el botón o no estamos en la página de login, abortamos
+    if (document.getElementById("btn-auto-uth") || !window.location.href.includes("op=211")) {
+        return;
+    }
 
-    // Estilos manuales para igualar el "contornito" (box-shadow) y el color exacto
+    const btn = document.createElement("button");
+    btn.id = "btn-auto-uth";
+    btn.innerText = "AUTO";
+    btn.className = "btn"; // Hereda la clase de la UTH
+
+    // Tus estilos exactos para el diseño de "gemelo idéntico"
     Object.assign(btn.style, {
         backgroundColor: "#02B394",
-        backgroundImage: "linear-gradient(to bottom, #02B394, #019278)", // Degradado sutil
+        backgroundImage: "linear-gradient(to bottom, #02B394, #019278)",
         color: "white",
         fontSize: "14px",
         fontWeight: "normal",
@@ -36,12 +38,13 @@ if (currentUrl.includes("op=211") && currentUrl.includes("re=1")) {
         padding: "4px 12px",
         border: "1px solid rgba(0, 0, 0, 0.1)",
         borderBottomColor: "rgba(0, 0, 0, 0.25)",
-        borderRadius: "4px", // El borde redondeado que faltaba
+        borderRadius: "4px",
         boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05)",
         cursor: "pointer",
         marginRight: "8px",
         textShadow: "0 -1px 0 rgba(0, 0, 0, 0.25)",
-        verticalAlign: "middle"
+        verticalAlign: "middle",
+        height: "30px"
     });
 
     btn.onclick = (e) => {
@@ -49,17 +52,19 @@ if (currentUrl.includes("op=211") && currentUrl.includes("re=1")) {
         llenarFormulario();
     };
 
-    // Buscamos el contenedor del botón "Acceder" para ponerlo justo al lado
+    // Buscamos el botón de Acceder original
     const btnAcceder = document.querySelector('input[type="submit"], #btnAcceder');
-    
+
     if (btnAcceder && btnAcceder.parentElement) {
+        // Se coloca justo a la izquierda del botón Acceder
         btnAcceder.parentElement.insertBefore(btn, btnAcceder);
-    } else {
-        // Respaldo si no encuentra el contenedor
-        btn.style.position = "fixed";
-        btn.style.top = "365px";
-        btn.style.left = "480px";
-        btn.style.zIndex = "9999";
-        document.body.appendChild(btn);
     }
 }
+
+// El "seguro" para que aparezca aunque la página cargue lento
+const loopDeteccion = setInterval(() => {
+    inyectarBotonOriginal();
+}, 1000);
+
+// Detenemos el loop después de 10 segundos para no saturar
+setTimeout(() => clearInterval(loopDeteccion), 10000);
