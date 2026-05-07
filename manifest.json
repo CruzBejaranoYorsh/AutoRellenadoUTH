@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "AutoLlenado UTH by Yorsh",
+  "version": "1.0",
+  "description": "Herramienta de autollenado para el portal de la UTH.",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://alumnos.uth.itsonora.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": [
+    "https://alumnos.uth.itsonora.com/*"
+  ]
+}
